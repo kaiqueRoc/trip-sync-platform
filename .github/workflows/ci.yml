@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout contracts sibling
+        uses: actions/checkout@v4
+        with:
+          repository: kaiqueRoc/trip-sync-contracts
+          path: trip-sync-contracts
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Build contracts
+        working-directory: trip-sync-contracts
+        run: npm ci && npm run build
+
+      - name: Install platform
+        run: npm ci
+        env:
+          DATABASE_URL: "file:./ci.db"
+
+      - name: Prisma push & seed
+        run: |
+          npx prisma db push
+          npx prisma db seed
+        env:
+          DATABASE_URL: "file:./ci.db"
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Build
+        run: npm run build
+        env:
+          DATABASE_URL: "file:./ci.db"
+          AUTH_SECRET: "ci-secret-min-32-chars-long!!"
+          AUTH_URL: "http://localhost:3000"

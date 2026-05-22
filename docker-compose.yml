@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tripsync
+      POSTGRES_PASSWORD: tripsync
+      POSTGRES_DB: tripsync
+    ports:
+      - "5432:5432"
+    volumes:
+      - tripsync_pg:/var/lib/postgresql/data
+
+volumes:
+  tripsync_pg:
