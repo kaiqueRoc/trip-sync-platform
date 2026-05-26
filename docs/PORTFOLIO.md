@@ -135,7 +135,7 @@ Abra http://localhost:3000 — a página inicial é o **preview de portfólio**;
 
 | App | Sugestão | URL / nota |
 |-----|----------|------------|
-| **trip-sync-platform** (preview) | GitHub Pages | https://kaiqueRoc.github.io/trip-sync-platform/ — ver `docs/DEPLOY.md` |
+| **trip-sync-platform** (preview) | GitHub Pages | https://kaiqueroc.github.io/trip-sync-platform/ — ver `docs/DEPLOY.md` |
 | **trip-sync-platform** (login) | Vercel + Neon | `AUTH_SECRET`, `AUTH_URL`, `DATABASE_URL` PostgreSQL |
 | **trip-sync-api** | Railway / Render | `/health` e `/docs` |
 | **trip-sync-ops** | Vercel / Netlify | `VITE_API_URL` → API |

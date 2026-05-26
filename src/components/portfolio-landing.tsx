@@ -175,12 +175,12 @@ export function PortfolioLanding() {
             <p className="mt-4 text-sm text-slate-600">
               Preview online (GitHub Pages):{" "}
               <a
-                href="https://kaiqueRoc.github.io/trip-sync-platform/"
+                href="https://kaiqueroc.github.io/trip-sync-platform/"
                 className="font-semibold text-brand-700 hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                kaiqueRoc.github.io/trip-sync-platform
+                kaiqueroc.github.io/trip-sync-platform
               </a>
             </p>
             <a

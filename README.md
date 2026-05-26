@@ -8,7 +8,7 @@ Plataforma multi-tenant de gestão de reservas para agências de viagem. Parte d
 
 Deploy na Vercel com PostgreSQL (Neon grátis). Guia completo: [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
-**GitHub Pages (só preview estático):** https://kaiqueRoc.github.io/trip-sync-platform/ — ative em Settings → Pages → GitHub Actions e faça push em `main`.
+**GitHub Pages (preview):** https://kaiqueroc.github.io/trip-sync-platform/
 
 ## Stack
 

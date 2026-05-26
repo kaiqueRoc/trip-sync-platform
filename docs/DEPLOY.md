@@ -4,7 +4,7 @@
 
 | Onde | O que roda | URL típica | Login / dashboard |
 |------|------------|------------|-------------------|
-| **GitHub Pages** | Preview estático (`docs/index.html`) | `https://kaiqueRoc.github.io/trip-sync-platform/` | Não |
+| **GitHub Pages** | Preview estático (`docs/index.html`) | `https://kaiqueroc.github.io/trip-sync-platform/` | Não |
 | **Vercel** | App Next.js completa | `https://seu-projeto.vercel.app` | Sim |
 
 Use **GitHub Pages** para mandar link de portfólio rápido. Use **Vercel** para a empresa testar login e reservas.
@@ -22,17 +22,20 @@ git commit -m "chore: GitHub Pages preview do portfólio TripSync"
 git push origin main
 ```
 
-### Passo B — Ativar no GitHub
+### Passo B — Ativar no GitHub (repositório trip-sync-platform)
 
-1. Abra https://github.com/kaiqueRoc/trip-sync-platform  
-2. **Settings** → **Pages**  
-3. Em **Build and deployment** → **Source**: escolha **GitHub Actions** (não “Deploy from branch”)  
-4. O workflow `Deploy GitHub Pages` roda no push em `main`  
-5. Em 1–2 minutos o site fica em:
+O workflow publica a branch `gh-pages`. **Uma vez** configure:
 
-   **https://kaiqueRoc.github.io/trip-sync-platform/**
+1. https://github.com/kaiqueRoc/trip-sync-platform → **Settings** → **Pages**  
+2. **Build and deployment** → **Source**: **Deploy from a branch**  
+3. Branch: **gh-pages** → pasta **/ (root)** → **Save**  
+4. Aguarde 1–2 min → **https://kaiqueroc.github.io/trip-sync-platform/**
 
-> Se o workflow falhar na primeira vez, confira em **Settings → Pages** se “GitHub Actions” está selecionado.
+> A URL do GitHub Pages usa o usuário em **minúsculas**: `kaiqueroc.github.io`, não `kaiqueRoc.github.io`.
+
+### Alternativa imediata (já no ar)
+
+O mesmo preview está em **https://kaiqueroc.github.io/trip-sync-platform/** via repositório `kaiqueRoc.github.io` (atualizado no push do portfólio pessoal).
 
 ---
 
@@ -91,7 +94,7 @@ Após o primeiro deploy, teste:
 
 No site https://kaiqueroc.github.io, adicione um card apontando para:
 
-- Pages: https://kaiqueRoc.github.io/trip-sync-platform/  
+- Pages: https://kaiqueroc.github.io/trip-sync-platform/  
 - Vercel: sua URL após o deploy  
 
 ---
