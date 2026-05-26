@@ -44,8 +44,8 @@ jobs:
 
       - name: Install platform
         run: |
-          npm pkg set dependencies.@trip-sync/contracts="file:./trip-sync-contracts"
           npm ci
+          npm install ./trip-sync-contracts --no-save
         env:
           DATABASE_URL: "postgresql://tripsync:tripsync@localhost:5432/tripsync"
 
