@@ -1,3 +1,4 @@
+import type { BookingResponse } from "@trip-sync/contracts";
 import { auth } from "@/auth";
 import { listBookings } from "@/app/actions/bookings";
 import { BookingActions } from "@/components/booking-actions";
@@ -25,7 +26,7 @@ export default async function BookingsPage({
   });
 
   const canWrite = canWriteBookings(session!.role);
-  const bookings = result.ok ? result.data.data : [];
+  const bookings: BookingResponse[] = result.ok ? result.data.data : [];
   const meta = result.ok ? result.data.meta : null;
 
   const statusFilters = [

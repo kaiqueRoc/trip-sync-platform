@@ -43,7 +43,9 @@ jobs:
         run: npm ci && npm run build
 
       - name: Install platform
-        run: npm ci
+        run: |
+          npm pkg set dependencies.@trip-sync/contracts="file:./trip-sync-contracts"
+          npm ci
         env:
           DATABASE_URL: "postgresql://tripsync:tripsync@localhost:5432/tripsync"
 
