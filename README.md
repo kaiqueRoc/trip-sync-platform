@@ -1,11 +1,19 @@
 # TripSync Platform
 
-Plataforma multi-tenant de gestão de reservas para agências de viagem. Parte do monorepo TripSync (portfólio).
+Plataforma multi-tenant de gestão de reservas para agências de viagem. Parte do ecossistema TripSync (portfólio).
+
+**Preview para empresas:** página pública em `/` após `npm run dev`, documento [`docs/PORTFOLIO.md`](docs/PORTFOLIO.md) e publicação em [`docs/DEPLOY.md`](docs/DEPLOY.md) (GitHub Pages + Vercel).
+
+## Demo interativa (Vercel)
+
+Deploy na Vercel com PostgreSQL (Neon grátis). Guia completo: [`docs/DEPLOY.md`](docs/DEPLOY.md).
+
+**GitHub Pages (só preview estático):** https://kaiqueRoc.github.io/trip-sync-platform/ — ative em Settings → Pages → GitHub Actions e faça push em `main`.
 
 ## Stack
 
 - **Next.js 15** (App Router)
-- **Prisma** + SQLite (demo local)
+- **Prisma** + PostgreSQL (local via Docker; Neon/Vercel em produção)
 - **NextAuth v5** (credentials + GitHub opcional)
 - **Zod** via [`@trip-sync/contracts`](../trip-sync-contracts) — schemas compartilhados com a API
 
@@ -25,10 +33,8 @@ Plataforma multi-tenant de gestão de reservas para agências de viagem. Parte d
 ## Setup rápido
 
 ```bash
-# Na pasta trip-sync-contracts (se ainda não buildou)
-cd ../trip-sync-contracts && npm ci && npm run build
-
-cd ../trip-sync-platform
+cd trip-sync-platform
+docker compose up -d
 cp .env.example .env
 npm ci
 npx prisma db push
@@ -54,7 +60,7 @@ Organização: **Demo Agency** (`demo-agency`). Reserva seed: `BK-DEMO0001`.
 
 | Variável           | Descrição                          |
 |--------------------|------------------------------------|
-| `DATABASE_URL`     | SQLite, ex.: `file:./dev.db`       |
+| `DATABASE_URL`     | PostgreSQL, ex.: `postgresql://tripsync:tripsync@localhost:5432/tripsync` |
 | `AUTH_SECRET`      | `openssl rand -base64 32`          |
 | `AUTH_URL`         | URL pública, ex. `http://localhost:3000` |
 | `AUTH_GITHUB_*`    | OAuth opcional                     |

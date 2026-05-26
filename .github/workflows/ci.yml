@@ -10,6 +10,21 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: tripsync
+          POSTGRES_PASSWORD: tripsync
+          POSTGRES_DB: tripsync
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tripsync -d tripsync"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -30,14 +45,14 @@ jobs:
       - name: Install platform
         run: npm ci
         env:
-          DATABASE_URL: "file:./ci.db"
+          DATABASE_URL: "postgresql://tripsync:tripsync@localhost:5432/tripsync"
 
       - name: Prisma push & seed
         run: |
           npx prisma db push
           npx prisma db seed
         env:
-          DATABASE_URL: "file:./ci.db"
+          DATABASE_URL: "postgresql://tripsync:tripsync@localhost:5432/tripsync"
 
       - name: Lint
         run: npm run lint
@@ -48,6 +63,6 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          DATABASE_URL: "file:./ci.db"
+          DATABASE_URL: "postgresql://tripsync:tripsync@localhost:5432/tripsync"
           AUTH_SECRET: "ci-secret-min-32-chars-long!!"
           AUTH_URL: "http://localhost:3000"
