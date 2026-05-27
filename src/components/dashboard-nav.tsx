@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const links = [
-  { href: "/dashboard", label: "Visão geral" },
-  { href: "/dashboard/bookings", label: "Reservas" },
-  { href: "/dashboard/audit", label: "Auditoria" },
+  { href: "/dashboard", label: "Visão geral", icon: "V" },
+  { href: "/dashboard/bookings", label: "Reservas", icon: "R" },
+  { href: "/dashboard/audit", label: "Auditoria", icon: "A" },
 ];
 
 export function DashboardNav() {
@@ -22,12 +22,15 @@ export function DashboardNav() {
           <Link
             key={link.href}
             href={link.href}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+            className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
               active
-                ? "bg-brand-600 text-white"
-                : "text-slate-600 hover:bg-slate-100"
+                ? "bg-teal-600 text-white shadow-sm"
+                : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
             }`}
           >
+            <span className="flex size-5 items-center justify-center text-xs">
+              {link.icon}
+            </span>
             {link.label}
           </Link>
         );
