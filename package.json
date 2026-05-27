@@ -18,6 +18,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.4",
     "@prisma/client": "^6.3.0",
     "@trip-sync/contracts": "github:kaiqueRoc/trip-sync-contracts",
     "bcryptjs": "^2.4.3",
