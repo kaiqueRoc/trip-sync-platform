@@ -2,6 +2,11 @@ import { auth } from "@/auth";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { canWriteBookings } from "@/lib/rbac";
+import {
+  isTripSyncApiConfigured,
+  listApiBookings,
+} from "@/lib/tripsync-api";
+import type { SessionContext } from "@/lib/tenant";
 
 function formatMoney(cents: number, currency: string) {
   return new Intl.NumberFormat("pt-BR", {
@@ -32,26 +37,70 @@ const statusClass = {
 
 export default async function DashboardPage() {
   const session = await auth();
-  const orgId = session!.organizationId;
+  const ctx: SessionContext = {
+    userId: session!.user.id,
+    organizationId: session!.organizationId,
+    role: session!.role,
+    email: session!.user.email ?? "",
+    name: session!.user.name ?? null,
+  };
+  const orgId = ctx.organizationId;
 
-  const [total, pending, confirmed, cancelled, recentAudit, recentBookings] =
+  const [bookingList, pendingList, confirmedList, cancelledList, recentAudit] =
     await Promise.all([
-    prisma.booking.count({ where: { organizationId: orgId } }),
-    prisma.booking.count({ where: { organizationId: orgId, status: "PENDING" } }),
-    prisma.booking.count({ where: { organizationId: orgId, status: "CONFIRMED" } }),
-    prisma.booking.count({ where: { organizationId: orgId, status: "CANCELLED" } }),
-    prisma.auditLog.findMany({
-      where: { organizationId: orgId },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      include: { user: { select: { email: true } } },
-    }),
-    prisma.booking.findMany({
-      where: { organizationId: orgId },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-  ]);
+      isTripSyncApiConfigured()
+        ? listApiBookings(ctx, { page: 1, pageSize: 5 })
+        : prisma.booking
+            .findMany({
+              where: { organizationId: orgId },
+              orderBy: { createdAt: "desc" },
+              take: 5,
+            })
+            .then((rows) => ({
+              data: rows.map((booking) => ({
+                ...booking,
+                checkIn: booking.checkIn.toISOString(),
+                checkOut: booking.checkOut.toISOString(),
+                createdAt: booking.createdAt.toISOString(),
+                updatedAt: booking.updatedAt.toISOString(),
+              })),
+              meta: {
+                page: 1,
+                pageSize: 5,
+                totalItems: rows.length,
+                totalPages: 1,
+                hasNext: false,
+                hasPrev: false,
+              },
+            })),
+      isTripSyncApiConfigured()
+        ? listApiBookings(ctx, { page: 1, pageSize: 1, status: "PENDING" })
+        : prisma.booking
+            .count({ where: { organizationId: orgId, status: "PENDING" } })
+            .then((count) => ({ meta: { totalItems: count } })),
+      isTripSyncApiConfigured()
+        ? listApiBookings(ctx, { page: 1, pageSize: 1, status: "CONFIRMED" })
+        : prisma.booking
+            .count({ where: { organizationId: orgId, status: "CONFIRMED" } })
+            .then((count) => ({ meta: { totalItems: count } })),
+      isTripSyncApiConfigured()
+        ? listApiBookings(ctx, { page: 1, pageSize: 1, status: "CANCELLED" })
+        : prisma.booking
+            .count({ where: { organizationId: orgId, status: "CANCELLED" } })
+            .then((count) => ({ meta: { totalItems: count } })),
+      prisma.auditLog.findMany({
+        where: { organizationId: orgId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: { user: { select: { email: true } } },
+      }),
+    ]);
+
+  const total = bookingList.meta.totalItems;
+  const pending = pendingList.meta.totalItems;
+  const confirmed = confirmedList.meta.totalItems;
+  const cancelled = cancelledList.meta.totalItems;
+  const recentBookings = bookingList.data;
 
   const canWrite = canWriteBookings(session!.role);
 
@@ -183,7 +232,7 @@ export default async function DashboardPage() {
                   </td>
                   <td className="px-5 py-4 text-slate-600">{booking.travelerName}</td>
                   <td className="px-5 py-4 text-slate-600">
-                    {formatDate(booking.checkIn)}
+                    {formatDate(new Date(booking.checkIn))}
                   </td>
                   <td className="px-5 py-4">
                     <span

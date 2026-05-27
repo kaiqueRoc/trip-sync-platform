@@ -19,16 +19,24 @@ export function BookingActions({ bookingId, status, canWrite }: Props) {
 
   async function handleStatus(next: "CONFIRMED" | "CANCELLED") {
     setPending(true);
-    await updateBookingStatus(bookingId, { status: next });
+    const result = await updateBookingStatus(bookingId, { status: next });
     setPending(false);
+    if (!result.ok) {
+      alert(result.error);
+      return;
+    }
     router.refresh();
   }
 
   async function handleDelete() {
     if (!confirm("Excluir esta reserva?")) return;
     setPending(true);
-    await deleteBooking(bookingId);
+    const result = await deleteBooking(bookingId);
     setPending(false);
+    if (!result.ok) {
+      alert(result.error);
+      return;
+    }
     router.refresh();
   }
 

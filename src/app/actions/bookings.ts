@@ -12,6 +12,12 @@ import { generateReference, toBookingResponse } from "@/lib/bookings-mapper";
 import { prisma } from "@/lib/prisma";
 import { canWriteBookings } from "@/lib/rbac";
 import { requireSession } from "@/lib/tenant";
+import {
+  createApiBooking,
+  isTripSyncApiConfigured,
+  listApiBookings,
+  updateApiBookingStatus,
+} from "@/lib/tripsync-api";
 import { actionError, type ActionResult } from "@/lib/action-result";
 
 function formatZodErrors(error: { flatten: () => { fieldErrors: Record<string, string[]> } }) {
@@ -26,6 +32,11 @@ export async function listBookings(
     const parsed = BookingListQuerySchema.safeParse(query);
     if (!parsed.success) {
       return actionError("Parâmetros inválidos", formatZodErrors(parsed.error));
+    }
+
+    if (isTripSyncApiConfigured()) {
+      const data = await listApiBookings(ctx, parsed.data);
+      return { ok: true, data };
     }
 
     const { page, pageSize, status, destination, providerId } = parsed.data;
@@ -84,6 +95,13 @@ export async function createBooking(
     }
 
     const data = parsed.data;
+    if (isTripSyncApiConfigured()) {
+      const booking = await createApiBooking(ctx, data);
+      revalidatePath("/dashboard/bookings");
+      revalidatePath("/dashboard");
+      return { ok: true, data: booking };
+    }
+
     let reference = generateReference();
     for (let attempt = 0; attempt < 5; attempt++) {
       const exists = await prisma.booking.findUnique({
@@ -146,6 +164,13 @@ export async function updateBookingStatus(
       return actionError("Dados inválidos", formatZodErrors(parsed.error));
     }
 
+    if (isTripSyncApiConfigured()) {
+      const booking = await updateApiBookingStatus(ctx, bookingId, parsed.data);
+      revalidatePath("/dashboard/bookings");
+      revalidatePath("/dashboard");
+      return { ok: true, data: booking };
+    }
+
     const existing = await prisma.booking.findFirst({
       where: { id: bookingId, organizationId: ctx.organizationId },
     });
@@ -187,6 +212,12 @@ export async function deleteBooking(
     const ctx = await requireSession();
     if (!canWriteBookings(ctx.role)) {
       return actionError("Permissão insuficiente");
+    }
+
+    if (isTripSyncApiConfigured()) {
+      return actionError(
+        "Exclusão ainda não está disponível via TripSync API. Cancele a reserva para manter o histórico.",
+      );
     }
 
     const existing = await prisma.booking.findFirst({
