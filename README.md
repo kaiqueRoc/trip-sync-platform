@@ -10,6 +10,28 @@ Deploy na Vercel com PostgreSQL (Neon grátis). Guia completo: [`docs/DEPLOY.md`
 
 **GitHub Pages (preview):** https://kaiqueroc.github.io/trip-sync-platform/
 
+## Ecossistema TripSync
+
+![TripSync Ecosystem](docs/portfolio-images/tripsync-ecossistema-cover.png)
+
+O TripSync é dividido em quatro repositórios integrados:
+
+- [trip-sync-platform](https://github.com/kaiqueRoc/trip-sync-platform) — aplicação Next.js com login, dashboard, reservas e auditoria.
+
+  ![TripSync Platform dashboard](docs/portfolio-images/tripsync-platform-dashboard.png)
+
+- [trip-sync-api](https://github.com/kaiqueRoc/trip-sync-api) — API REST Fastify com Prisma, webhooks, fila de sincronização e documentação OpenAPI.
+
+  ![TripSync API cover](docs/portfolio-images/tripsync-api-cover.png)
+
+- [trip-sync-ops](https://github.com/kaiqueRoc/trip-sync-ops) — console operacional React para acompanhar reservas, provedores e jobs.
+
+  ![TripSync Ops cover](docs/portfolio-images/tripsync-ops-cover.png)
+
+- [trip-sync-contracts](https://github.com/kaiqueRoc/trip-sync-contracts) — contratos compartilhados com Zod, tipos TypeScript e OpenAPI 3.1.
+
+  ![TripSync Contracts cover](docs/portfolio-images/tripsync-contracts-cover.png)
+
 ## Stack
 
 - **Next.js 15** (App Router)
